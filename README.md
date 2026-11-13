@@ -8,10 +8,14 @@ Permite **minimizar cualquier ventana hacia el área de notificación (System Tr
 
 ## 🎖️ Créditos y Reconocimientos
 
-Este proyecto está basado e inspirado directamente en la versión original de **RBTray** (1998-2010), creada por **Nikolay Redko** y **J.D. Purcell**, distribuida bajo licencia GNU GPL v2.
-- Repositorio original en SourceForge: [http://rbtray.sourceforge.net/](http://rbtray.sourceforge.net/) (espejo en GitHub: [benbuck/rbtray](https://github.com/benbuck/rbtray)).
-- Agradecimiento especial a sus autores originales por la ingeniosa idea del hook de botón no-cliente (`HTMINBUTTON`).
-- Esta versión en Rust preserva la filosofía ligera y sin dependencias del proyecto original, mejorándola con seguridad de memoria, colecciones dinámicas y compatibilidad moderna.
+- **Desarrollo y Reimplementación Moderna (RBTray-rs):**
+  - **Luis Alberto Garcia (@worm91)** — Arquitectura en Rust, soporte para aplicaciones modernas (Electron / CSD), atajos globales de teclado (`Win+Alt`), modo oscuro nativo, sincronización dinámica de títulos, lista de exclusión e instalador oficial.
+
+- **Autores de la Idea Original y Versión Clásica en C++ (1998–2010):**
+  - **Nikolay Redko** y **J.D. Purcell** — Por la ingeniosa técnica original del hook Win32 sobre el botón de minimizar (`HTMINBUTTON`).
+  - Repositorio histórico en SourceForge: [http://rbtray.sourceforge.net/](http://rbtray.sourceforge.net/) (espejo en GitHub: [benbuck/rbtray](https://github.com/benbuck/rbtray)).
+
+- **Licencia:** Distribuido bajo los términos de software libre de la Licencia Pública General GNU v2 (**GNU GPL v2**).
 
 ---
 

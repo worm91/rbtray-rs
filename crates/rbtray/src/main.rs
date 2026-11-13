@@ -536,15 +536,11 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w_param: WPARAM, l_para
                     let title: Vec<u16> = "Acerca de RBTray-rs\0".encode_utf16().collect();
                     let desc: Vec<u16> = concat!(
                         "RBTray-rs v0.2.0\n\n",
-                        "Minimiza cualquier ventana al área de notificación de Windows.\n\n",
-                        "Novedades:\n",
-                        "• Soporte para aplicaciones modernas (Electron, CSD, Chrome, etc.).\n",
-                        "• Atajos globales: Win+Alt+Abajo (minimizar), Win+Alt+Arriba (restaurar), Win+Alt+R (restaurar todo).\n",
-                        "• Modo Oscuro nativo en menús.\n",
-                        "• Lista de exclusión y sincronización dinámica de títulos.\n\n",
-                        "Créditos:\n",
-                        "• Basado en el concepto original de RBTray (1998-2010) de Nikolay Redko y J.D. Purcell.\n",
-                        "• Reimplementación moderna en Rust.\n\n",
+                        "Minimiza cualquier ventana al área de notificación de Windows con clic derecho o atajos de teclado.\n\n",
+                        "Desarrollado y modernizado por:\n",
+                        "• Luis Alberto Garcia (@worm91) — Reimplementación en Rust, soporte CSD/Electron, atajos y UX moderna.\n\n",
+                        "Basado en la idea original de:\n",
+                        "• Nikolay Redko y J.D. Purcell (RBTray clásico en C++, 1998–2010).\n\n",
                         "Licencia: GNU GPL v2"
                     )
                     .encode_utf16()

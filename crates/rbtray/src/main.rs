@@ -15,7 +15,7 @@ use windows_sys::Win32::System::Threading::{
     OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
 };
 use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
-    RegisterHotKey, UnregisterHotKey, MOD_ALT, MOD_WIN, VK_DOWN, VK_UP,
+    RegisterHotKey, UnregisterHotKey, MOD_CONTROL, MOD_WIN, VK_DOWN, VK_UP,
 };
 use windows_sys::Win32::UI::Shell::{
     Shell_NotifyIconW, NIF_ICON, NIF_MESSAGE, NIF_TIP, NIM_ADD, NIM_DELETE, NIM_MODIFY,
@@ -167,9 +167,9 @@ fn load_blacklist() -> Vec<String> {
     "lockapp.exe"
   ],
   "hotkeys": {
-    "minimizeForeground": "Win + Alt + Down",
-    "restoreLast": "Win + Alt + Up",
-    "restoreAll": "Win + Alt + R"
+    "minimizeForeground": "Ctrl + Win + Down",
+    "restoreLast": "Ctrl + Win + Up",
+    "restoreAll": "Ctrl + Win + T"
   }
 }"#;
     let _ = fs::write(&path, default_json);
@@ -699,12 +699,12 @@ fn main() {
         WM_TASKBAR_CREATED = RegisterWindowMessageW(TASKBAR_CREATED_STR.as_ptr());
 
         // Registrar Atajos Globales de Teclado
-        // Win + Alt + Down: Minimizar ventana activa
-        RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE, (MOD_ALT | MOD_WIN) as u32, VK_DOWN as u32);
-        // Win + Alt + Up: Restaurar última ventana minimizada
-        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_LAST, (MOD_ALT | MOD_WIN) as u32, VK_UP as u32);
-        // Win + Alt + R: Restaurar todas las ventanas
-        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_ALT | MOD_WIN) as u32, 0x52); // 'R'
+        // Ctrl + Win + Down: Minimizar ventana activa
+        RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE, (MOD_CONTROL | MOD_WIN) as u32, VK_DOWN as u32);
+        // Ctrl + Win + Up: Restaurar última ventana minimizada
+        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_LAST, (MOD_CONTROL | MOD_WIN) as u32, VK_UP as u32);
+        // Ctrl + Win + T: Restaurar todas las ventanas (T de Tray)
+        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_CONTROL | MOD_WIN) as u32, 0x54); // 'T'
 
         // Iniciar temporizador de sincronización dinámica cada 1500ms
         SetTimer(main_hwnd, TIMER_ID, 1500, None);

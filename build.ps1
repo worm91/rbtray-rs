@@ -1,4 +1,4 @@
-﻿# Script de compilación y empaquetado para RBTray-rs
+# Script de compilación y empaquetado para RBTray-rs
 param(
     [switch]$Release = $true
 )

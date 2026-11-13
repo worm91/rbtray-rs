@@ -9,7 +9,7 @@ Permite **minimizar cualquier ventana hacia el área de notificación (System Tr
 ## 🎖️ Créditos y Reconocimientos
 
 - **Desarrollo y Reimplementación Moderna (RBTray-rs):**
-  - **Luis Alberto Garcia (@worm91)** — Arquitectura en Rust, soporte para aplicaciones modernas (Electron / CSD), atajos globales de teclado (`Win+Alt`), modo oscuro nativo, sincronización dinámica de títulos, lista de exclusión e instalador oficial.
+  - **Luis Alberto Garcia (@worm91)** — Arquitectura en Rust, soporte para aplicaciones modernas (Electron / CSD), atajos globales de teclado (`Ctrl+Win`), modo oscuro nativo, sincronización dinámica de títulos, lista de exclusión e instalador oficial.
 
 - **Autores de la Idea Original y Versión Clásica en C++ (1998–2010):**
   - **Nikolay Redko** y **J.D. Purcell** — Por la ingeniosa técnica original del hook Win32 sobre el botón de minimizar (`HTMINBUTTON`).
@@ -24,9 +24,9 @@ Permite **minimizar cualquier ventana hacia el área de notificación (System Tr
 1. **Soporte para aplicaciones modernas (Electron, CSD, Chrome, Spotify, Discord, etc.):**
    - No solo detecta `HTMINBUTTON` estándar en aplicaciones Win32 clásicas, sino también ventanas con barras de título personalizadas y eventos de área cliente (`WM_RBUTTONUP` con hit-testing heurístico).
 2. **Atajos Globales de Teclado (*Global Hotkeys*):**
-   - **`Win + Alt + Flecha Abajo`**: Minimiza instantáneamente la ventana activa al System Tray.
-   - **`Win + Alt + Flecha Arriba`**: Restaura la última ventana minimizada.
-   - **`Win + Alt + R`**: Restaura **todas** las ventanas minimizadas simultáneamente.
+   - **`Ctrl + Win + Flecha Abajo`**: Minimiza instantáneamente la ventana activa al System Tray.
+   - **`Ctrl + Win + Flecha Arriba`**: Restaura la última ventana minimizada.
+   - **`Ctrl + Win + T`**: Restaura **todas** las ventanas minimizadas simultáneamente (T de Tray).
 3. **Modo Oscuro Nativo en Menús (Windows 10/11):**
    - Integración con las APIs de UxTheme para que el menú contextual se dibuje en modo oscuro o claro según la preferencia del sistema operativo.
 4. **Menú contextual extendido:**
@@ -90,10 +90,10 @@ rbtray-rs/
 ## 📖 Uso
 
 - **Con ratón:** Haz **clic derecho** sobre el botón minimizar (`_`) de cualquier ventana (clásica o Electron/CSD).
-- **Con teclado:** Pulsa **`Win + Alt + Flecha Abajo`** en cualquier momento para minimizar la ventana en primer plano.
+- **Con teclado:** Pulsa **`Ctrl + Win + Flecha Abajo`** en cualquier momento para minimizar la ventana en primer plano.
 - **Para restaurar:**
   - **Clic izquierdo** sobre su icono en la bandeja.
-  - O pulsa **`Win + Alt + Flecha Arriba`** para restaurar la última ventana.
-  - O pulsa **`Win + Alt + R`** para restaurar todas.
+  - O pulsa **`Ctrl + Win + Flecha Arriba`** para restaurar la última ventana.
+  - O pulsa **`Ctrl + Win + T`** para restaurar todas.
 - **Menú contextual:** **Clic derecho** sobre cualquier icono en la bandeja para ver opciones extendidas.
 - **Salir:** Clic derecho en el icono -> *Salir de RBTray-rs* (o ejecutando `rbtray.exe --exit`).

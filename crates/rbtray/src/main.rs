@@ -15,7 +15,7 @@ use windows_sys::Win32::System::Threading::{
     OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
 };
 use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
-    RegisterHotKey, UnregisterHotKey, MOD_CONTROL, MOD_WIN, VK_DOWN, VK_LEFT, VK_RIGHT, VK_UP,
+    RegisterHotKey, UnregisterHotKey, MOD_ALT, MOD_CONTROL, MOD_WIN, VK_DOWN, VK_UP,
 };
 use windows_sys::Win32::UI::Shell::{
     Shell_NotifyIconW, NIF_ICON, NIF_MESSAGE, NIF_TIP, NIM_ADD, NIM_DELETE, NIM_MODIFY,
@@ -68,10 +68,10 @@ const IDM_ABOUT: usize = 0x1006;
 const IDM_EXIT: usize = 0x1007;
 
 // IDs de Hotkeys
-const HOTKEY_MINIMIZE: i32 = 1;       // Ctrl + Win + Down
-const HOTKEY_RESTORE_LAST: i32 = 2;   // Ctrl + Win + Up
-const HOTKEY_RESTORE_ALL: i32 = 3;    // Ctrl + Win + Right
-const HOTKEY_MINIMIZE_ALL: i32 = 4;   // Ctrl + Win + Left
+const HOTKEY_MINIMIZE: i32 = 1;       // Ctrl + Win + Down (Minimizar activa)
+const HOTKEY_RESTORE_LAST: i32 = 2;   // Ctrl + Win + Up (Restaurar última)
+const HOTKEY_RESTORE_ALL: i32 = 3;    // Ctrl + Win + Alt + Up (Restaurar todas)
+const HOTKEY_MINIMIZE_ALL: i32 = 4;   // Ctrl + Win + Alt + Down (Minimizar todas)
 
 // ID de Timer
 const TIMER_ID: usize = 100;
@@ -598,8 +598,8 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w_param: WPARAM, l_para
                         "Atajos globales:\n",
                         "• Ctrl + Win + Abajo: Minimizar ventana activa\n",
                         "• Ctrl + Win + Arriba: Restaurar última ventana\n",
-                        "• Ctrl + Win + Derecha: Restaurar todas las ventanas\n",
-                        "• Ctrl + Win + Izquierda: Minimizar todas las ventanas al tray\n\n",
+                        "• Ctrl + Win + Alt + Abajo: Minimizar todas las ventanas al tray\n",
+                        "• Ctrl + Win + Alt + Arriba: Restaurar todas las ventanas\n\n",
                         "Desarrollado y modernizado por:\n",
                         "• Luis Alberto Garcia (@worm91) — Reimplementación en Rust, soporte CSD/Electron, atajos y UX moderna.\n\n",
                         "Basado en la idea original de:\n",
@@ -762,15 +762,15 @@ fn main() {
 
         WM_TASKBAR_CREATED = RegisterWindowMessageW(TASKBAR_CREATED_STR.as_ptr());
 
-        // Registrar Atajos Globales de Teclado (4 direcciones intuitivas con Ctrl + Win)
+        // Registrar Atajos Globales de Teclado
         // Ctrl + Win + Down: Minimizar ventana activa
         RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE, (MOD_CONTROL | MOD_WIN) as u32, VK_DOWN as u32);
         // Ctrl + Win + Up: Restaurar última ventana minimizada
         RegisterHotKey(main_hwnd, HOTKEY_RESTORE_LAST, (MOD_CONTROL | MOD_WIN) as u32, VK_UP as u32);
-        // Ctrl + Win + Right: Restaurar todas las ventanas
-        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_CONTROL | MOD_WIN) as u32, VK_RIGHT as u32);
-        // Ctrl + Win + Left: Minimizar todas las ventanas al System Tray
-        RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE_ALL, (MOD_CONTROL | MOD_WIN) as u32, VK_LEFT as u32);
+        // Ctrl + Win + Alt + Up: Restaurar todas las ventanas
+        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_CONTROL | MOD_WIN | MOD_ALT) as u32, VK_UP as u32);
+        // Ctrl + Win + Alt + Down: Minimizar todas las ventanas al System Tray
+        RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE_ALL, (MOD_CONTROL | MOD_WIN | MOD_ALT) as u32, VK_DOWN as u32);
 
         // Iniciar temporizador de sincronización dinámica cada 1500ms
         SetTimer(main_hwnd, TIMER_ID, 1500, None);

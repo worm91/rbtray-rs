@@ -25,11 +25,11 @@ Permite **minimizar cualquier ventana hacia el área de notificación (System Tr
 
 1. **Soporte para aplicaciones modernas (Electron, CSD, Chrome, Spotify, Discord, VS Code, etc.):**
    - Intercepta clics sobre el botón de minimizar incluso en aplicaciones sin marco tradicional de Windows mediante hit-testing heurístico.
-2. **Atajos Globales de Teclado (*Sistema Intuitivo de 4 Flechas*):**
+2. **Atajos Globales de Teclado (*Sistema Ergonómico Ctrl + Win*):**
    - **`Ctrl + Win + Flecha Abajo`**: Minimiza instantáneamente la ventana activa al System Tray.
    - **`Ctrl + Win + Flecha Arriba`**: Restaura la última ventana minimizada (orden LIFO).
-   - **`Ctrl + Win + Flecha Derecha`**: Restaura **todas** las ventanas minimizadas simultáneamente.
-   - **`Ctrl + Win + Flecha Izquierda`**: Minimiza **todas** las ventanas abiertas directamente al System Tray.
+   - **`Ctrl + Win + Alt + Flecha Abajo`**: Minimiza **todas** las ventanas abiertas directamente al System Tray.
+   - **`Ctrl + Win + Alt + Flecha Arriba`**: Restaura **todas** las ventanas minimizadas simultáneamente.
 3. **Modo Oscuro Nativo en Menús (Windows 10/11):**
    - Integración con las APIs de UxTheme para que el menú contextual se dibuje en modo oscuro o claro según la preferencia del sistema operativo.
 4. **Menú contextual extendido:**
@@ -46,11 +46,11 @@ Permite **minimizar cualquier ventana hacia el área de notificación (System Tr
 ## 📖 Uso
 
 - **Con ratón:** Haz **clic derecho** sobre el botón minimizar (`_`) de cualquier ventana (clásica o Electron/CSD).
-- **Con teclado (4 Flechas):**
+- **Con teclado:**
   - Pulsa **`Ctrl + Win + Flecha Abajo`** para minimizar la ventana activa al tray.
   - Pulsa **`Ctrl + Win + Flecha Arriba`** para restaurar la última ventana minimizada.
-  - Pulsa **`Ctrl + Win + Flecha Derecha`** para restaurar **todas** las ventanas minimizadas.
-  - Pulsa **`Ctrl + Win + Flecha Izquierda`** para minimizar **todas** las ventanas al tray.
+  - Pulsa **`Ctrl + Win + Alt + Flecha Abajo`** para minimizar **todas** las ventanas al tray.
+  - Pulsa **`Ctrl + Win + Alt + Flecha Arriba`** para restaurar **todas** las ventanas minimizadas.
 - **Menú contextual:** **Clic derecho** sobre cualquier icono en la bandeja para ver opciones extendidas.
 - **Salir:** Clic derecho en el icono -> *Salir de RBTray-rs* (o ejecutando `rbtray.exe --exit`).
 

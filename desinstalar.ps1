@@ -1,4 +1,4 @@
-﻿# Script de desinstalación para RBTray-rs
+# Script de desinstalación para RBTray-rs
 $ErrorActionPreference = "SilentlyContinue"
 
 Write-Host "=== Desinstalador de RBTray-rs ===" -ForegroundColor Cyan

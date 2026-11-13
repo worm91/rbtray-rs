@@ -1,4 +1,4 @@
-# Script de compilación y empaquetado para RBTray-rs
+﻿# Script de compilación y empaquetado para RBTray-rs
 param(
     [switch]$Release = $true
 )
@@ -64,7 +64,7 @@ if ($isccPath) {
     & $isccPath (Join-Path $PSScriptRoot "installer.iss")
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✓ Instalador de Windows creado con éxito:" -ForegroundColor Green
-        Write-Host "  $distDir\RBTray-rs-Setup-v0.1.0.exe" -ForegroundColor White
+        Write-Host "  $distDir\RBTray-rs-Setup-v0.2.0.exe" -ForegroundColor White
     }
 } else {
     Write-Host "`nInno Setup no detectado. Para generar el archivo de instalación .exe, instala Inno Setup o ejecuta installer.iss." -ForegroundColor Gray

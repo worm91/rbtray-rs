@@ -1,5 +1,5 @@
 #define MyAppName "RBTray-rs"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.2.0"
 #define MyAppPublisher "Nikolay Redko, J.D. Purcell & RBTray-rs Contributors"
 #define MyAppURL "https://github.com/worm91/rbtray-rs"
 #define MyAppExeName "rbtray.exe"

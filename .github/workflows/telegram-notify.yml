@@ -1,0 +1,104 @@
+name: Telegram Interaction Notifier
+
+on:
+  workflow_dispatch:
+  watch:
+    types: [started]
+  fork:
+  issues:
+    types: [opened, closed, reopened]
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [opened, closed, reopened]
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Notification Message
+        id: format_message
+        run: |
+          EVENT="${{ github.event_name }}"
+          ACTION="${{ github.event.action }}"
+          SENDER="${{ github.actor }}"
+          REPO="${{ github.repository }}"
+          MSG=""
+
+          if [ "$EVENT" = "watch" ]; then
+            STARS=$(curl -s "https://api.github.com/repos/$REPO" | grep -m1 '"stargazers_count"' | awk -F: '{print $2}' | tr -d ' ,')
+            MSG="⭐ *¡Nueva estrella recibida!*
+            
+• *Usuario:* [$SENDER](https://github.com/$SENDER)
+• *Repositorio:* [$REPO](https://github.com/$REPO)
+• *Total de Stars:* $STARS"
+
+          elif [ "$EVENT" = "fork" ]; then
+            FORK_URL="${{ github.event.forkee.html_url }}"
+            MSG="🍴 *¡Nuevo Fork creado!*
+            
+• *Usuario:* [$SENDER](https://github.com/$SENDER)
+• *Fork:* [Ver repositorio bifurcado]($FORK_URL)"
+
+          elif [ "$EVENT" = "issues" ]; then
+            ISSUE_NUM="${{ github.event.issue.number }}"
+            ISSUE_TITLE="${{ github.event.issue.title }}"
+            ISSUE_URL="${{ github.event.issue.html_url }}"
+            MSG="🐛 *Issue ($ACTION)*
+            
+• *Título:* $ISSUE_TITLE (#$ISSUE_NUM)
+• *Autor:* [$SENDER](https://github.com/$SENDER)
+• *Enlace:* [Abrir Issue]($ISSUE_URL)"
+
+          elif [ "$EVENT" = "issue_comment" ]; then
+            ISSUE_TITLE="${{ github.event.issue.title }}"
+            COMMENT_URL="${{ github.event.comment.html_url }}"
+            MSG="💬 *Nuevo Comentario*
+            
+• *En:* $ISSUE_TITLE
+• *Por:* [$SENDER](https://github.com/$SENDER)
+• *Enlace:* [Ver comentario]($COMMENT_URL)"
+
+          elif [ "$EVENT" = "pull_request" ]; then
+            PR_NUM="${{ github.event.pull_request.number }}"
+            PR_TITLE="${{ github.event.pull_request.title }}"
+            PR_URL="${{ github.event.pull_request.html_url }}"
+            MSG="🔀 *Pull Request ($ACTION)*
+            
+• *Título:* $PR_TITLE (#$PR_NUM)
+• *Autor:* [$SENDER](https://github.com/$SENDER)
+• *Enlace:* [Ver Pull Request]($PR_URL)"
+
+          elif [ "$EVENT" = "release" ]; then
+            REL_NAME="${{ github.event.release.name }}"
+            REL_TAG="${{ github.event.release.tag_name }}"
+            REL_URL="${{ github.event.release.html_url }}"
+            MSG="🚀 *Nuevo Release Publicado*
+            
+• *Versión:* $REL_TAG ($REL_NAME)
+• *Publicado por:* [$SENDER](https://github.com/$SENDER)
+• *Enlace:* [Ver Release]($REL_URL)"
+
+          else
+            MSG="🔔 *Interacción en GitHub* ($EVENT / $ACTION) por [$SENDER](https://github.com/$SENDER)"
+          fi
+
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          echo "$MSG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send Notification to Telegram
+        if: steps.format_message.outputs.message != ''
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d @- << 'EOF'
+          {
+            "chat_id": "${{ secrets.TELEGRAM_CHAT_ID }}",
+            "text": "${{ steps.format_message.outputs.message }}",
+            "parse_mode": "Markdown",
+            "disable_web_page_preview": false
+          }
+          EOF

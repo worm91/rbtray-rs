@@ -36,10 +36,16 @@ Name: "desktopicon"; Description: "Crear un acceso directo en el Escritorio"; Gr
 
 [Files]
 Source: "dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "dist\rbhook.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\rbhook.dll"; DestDir: "{app}"; Flags: ignoreversion restartreplace uninsrestartdelete
 Source: "assets\app.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.es.md"; DestDir: "{app}"; Flags: ignoreversion
+
+[UninstallDelete]
+Type: files; Name: "{app}\config.json"
+Type: files; Name: "{app}\*.log"
+Type: files; Name: "{app}\rbhook.dll"
+Type: filesandordirs; Name: "{app}"
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\app.ico"

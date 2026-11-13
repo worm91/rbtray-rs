@@ -15,7 +15,7 @@ use windows_sys::Win32::System::Threading::{
     OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
 };
 use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
-    RegisterHotKey, UnregisterHotKey, MOD_CONTROL, MOD_WIN, VK_DOWN, VK_UP,
+    RegisterHotKey, UnregisterHotKey, MOD_CONTROL, MOD_WIN, VK_DOWN, VK_LEFT, VK_RIGHT, VK_UP,
 };
 use windows_sys::Win32::UI::Shell::{
     Shell_NotifyIconW, NIF_ICON, NIF_MESSAGE, NIF_TIP, NIM_ADD, NIM_DELETE, NIM_MODIFY,
@@ -23,15 +23,16 @@ use windows_sys::Win32::UI::Shell::{
 };
 use windows_sys::Win32::UI::WindowsAndMessaging::{
     AppendMenuW, CreatePopupMenu, CreateWindowExW, DefWindowProcW, DestroyMenu, DispatchMessageW,
-    FindWindowW, GetAncestor, GetClassLongPtrW, GetCursorPos, GetForegroundWindow, GetMessageW,
-    GetWindowLongPtrW, GetWindowTextW, GetWindowThreadProcessId, IsWindow, IsWindowVisible,
-    KillTimer, LoadIconW, MessageBoxW, PostMessageW, PostQuitMessage, RegisterClassExW,
-    RegisterWindowMessageW, SendMessageW, SetForegroundWindow, SetTimer, ShowWindow, TrackPopupMenu,
-    TranslateMessage, GCLP_HICON, GCLP_HICONSM, GA_ROOT, GWL_EXSTYLE, GWL_STYLE, HICON, HMENU,
-    IDI_APPLICATION, MB_ICONERROR, MB_ICONINFORMATION, MB_OK, MF_SEPARATOR, MF_STRING, SW_HIDE,
-    SW_SHOW, TPM_BOTTOMALIGN, TPM_LEFTBUTTON, TPM_RIGHTALIGN, TPM_RIGHTBUTTON, WM_CLOSE,
-    WM_COMMAND, WM_CONTEXTMENU, WM_DESTROY, WM_GETICON, WM_HOTKEY, WM_TIMER, WM_USER,
-    WNDCLASSEXW, WS_CHILD, WS_EX_MDICHILD, WS_OVERLAPPED,
+    EnumWindows, FindWindowW, GetAncestor, GetClassLongPtrW, GetClassNameW, GetCursorPos,
+    GetForegroundWindow, GetMessageW, GetWindowLongPtrW, GetWindowTextLengthW, GetWindowTextW,
+    GetWindowThreadProcessId, IsWindow, IsWindowVisible, KillTimer, LoadIconW, MessageBoxW,
+    PostMessageW, PostQuitMessage, RegisterClassExW, RegisterWindowMessageW, SendMessageW,
+    SetForegroundWindow, SetTimer, ShowWindow, TrackPopupMenu, TranslateMessage, GCLP_HICON,
+    GCLP_HICONSM, GA_ROOT, GWL_EXSTYLE, GWL_STYLE, HICON, HMENU, IDI_APPLICATION, MB_ICONERROR,
+    MB_ICONINFORMATION, MB_OK, MF_SEPARATOR, MF_STRING, SW_HIDE, SW_SHOW, TPM_BOTTOMALIGN,
+    TPM_LEFTBUTTON, TPM_RIGHTALIGN, TPM_RIGHTBUTTON, WM_CLOSE, WM_COMMAND, WM_CONTEXTMENU,
+    WM_DESTROY, WM_GETICON, WM_HOTKEY, WM_TIMER, WM_USER, WNDCLASSEXW, WS_CHILD, WS_EX_MDICHILD,
+    WS_EX_TOOLWINDOW, WS_OVERLAPPED,
 };
 
 const COLOR_WINDOW_SYS: u32 = 5;
@@ -61,14 +62,16 @@ const WM_TRAYCMD: u32 = 0x0404;
 const IDM_RESTORE: usize = 0x1001;
 const IDM_CLOSE: usize = 0x1002;
 const IDM_RESTORE_ALL: usize = 0x1003;
-const IDM_CLOSE_ALL: usize = 0x1004;
-const IDM_ABOUT: usize = 0x1005;
-const IDM_EXIT: usize = 0x1006;
+const IDM_MINIMIZE_ALL: usize = 0x1004;
+const IDM_CLOSE_ALL: usize = 0x1005;
+const IDM_ABOUT: usize = 0x1006;
+const IDM_EXIT: usize = 0x1007;
 
 // IDs de Hotkeys
-const HOTKEY_MINIMIZE: i32 = 1;
-const HOTKEY_RESTORE_LAST: i32 = 2;
-const HOTKEY_RESTORE_ALL: i32 = 3;
+const HOTKEY_MINIMIZE: i32 = 1;       // Ctrl + Win + Down
+const HOTKEY_RESTORE_LAST: i32 = 2;   // Ctrl + Win + Up
+const HOTKEY_RESTORE_ALL: i32 = 3;    // Ctrl + Win + Right
+const HOTKEY_MINIMIZE_ALL: i32 = 4;   // Ctrl + Win + Left
 
 // ID de Timer
 const TIMER_ID: usize = 100;
@@ -169,7 +172,8 @@ fn load_blacklist() -> Vec<String> {
   "hotkeys": {
     "minimizeForeground": "Ctrl + Win + Down",
     "restoreLast": "Ctrl + Win + Up",
-    "restoreAll": "Ctrl + Win + 0"
+    "restoreAll": "Ctrl + Win + Right",
+    "minimizeAll": "Ctrl + Win + Left"
   }
 }"#;
     let _ = fs::write(&path, default_json);
@@ -336,6 +340,52 @@ unsafe fn restore_all_windows(main_hwnd: HWND) {
     }
 }
 
+unsafe extern "system" fn enum_windows_to_minimize(hwnd: HWND, l_param: LPARAM) -> i32 {
+    let main_hwnd = l_param as HWND;
+    if hwnd == main_hwnd {
+        return 1;
+    }
+
+    if IsWindowVisible(hwnd) == 0 {
+        return 1;
+    }
+
+    let ex_style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE) as u32;
+    if (ex_style & WS_EX_TOOLWINDOW) != 0 || (ex_style & WS_EX_MDICHILD) != 0 {
+        return 1;
+    }
+
+    let style = GetWindowLongPtrW(hwnd, GWL_STYLE) as u32;
+    if (style & WS_CHILD) != 0 {
+        return 1;
+    }
+
+    if GetWindowTextLengthW(hwnd) == 0 {
+        return 1;
+    }
+
+    let mut class_buf = [0u16; 64];
+    let class_len = GetClassNameW(hwnd, class_buf.as_mut_ptr(), 64);
+    if class_len > 0 {
+        let class_name = String::from_utf16_lossy(&class_buf[..class_len as usize]);
+        if class_name == "Shell_TrayWnd"
+            || class_name == "Progman"
+            || class_name == "WorkerW"
+            || class_name == "RBTrayHook"
+            || class_name == "Windows.UI.Core.CoreWindow"
+        {
+            return 1;
+        }
+    }
+
+    minimize_window(main_hwnd, hwnd);
+    1
+}
+
+unsafe fn minimize_all_windows(main_hwnd: HWND) {
+    EnumWindows(Some(enum_windows_to_minimize), main_hwnd as LPARAM);
+}
+
 unsafe fn close_window_from_tray(hwnd: HWND) {
     PostMessageW(hwnd, WM_CLOSE, 0, 0);
 }
@@ -370,7 +420,8 @@ unsafe fn show_context_menu(main_hwnd: HWND) {
 
     let restore_str: Vec<u16> = "Restaurar esta ventana\0".encode_utf16().collect();
     let close_str: Vec<u16> = "Cerrar esta ventana\0".encode_utf16().collect();
-    let restore_all_str: Vec<u16> = "Restaurar todas las ventanas\0".encode_utf16().collect();
+    let restore_all_str: Vec<u16> = "Restaurar todas las ventanas (Ctrl+Win+Right)\0".encode_utf16().collect();
+    let minimize_all_str: Vec<u16> = "Minimizar todas las ventanas (Ctrl+Win+Left)\0".encode_utf16().collect();
     let close_all_str: Vec<u16> = "Cerrar todas las ventanas\0".encode_utf16().collect();
     let about_str: Vec<u16> = "Acerca de RBTray-rs\0".encode_utf16().collect();
     let exit_str: Vec<u16> = "Salir de RBTray-rs\0".encode_utf16().collect();
@@ -379,6 +430,7 @@ unsafe fn show_context_menu(main_hwnd: HWND) {
     AppendMenuW(h_menu, MF_STRING, IDM_CLOSE, close_str.as_ptr());
     AppendMenuW(h_menu, MF_SEPARATOR, 0, ptr::null());
     AppendMenuW(h_menu, MF_STRING, IDM_RESTORE_ALL, restore_all_str.as_ptr());
+    AppendMenuW(h_menu, MF_STRING, IDM_MINIMIZE_ALL, minimize_all_str.as_ptr());
     AppendMenuW(h_menu, MF_STRING, IDM_CLOSE_ALL, close_all_str.as_ptr());
     AppendMenuW(h_menu, MF_SEPARATOR, 0, ptr::null());
     AppendMenuW(h_menu, MF_STRING, IDM_ABOUT, about_str.as_ptr());
@@ -480,6 +532,9 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w_param: WPARAM, l_para
                 HOTKEY_RESTORE_ALL => {
                     restore_all_windows(hwnd);
                 }
+                HOTKEY_MINIMIZE_ALL => {
+                    minimize_all_windows(hwnd);
+                }
                 _ => {}
             }
             0
@@ -529,6 +584,9 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w_param: WPARAM, l_para
                 IDM_RESTORE_ALL => {
                     restore_all_windows(hwnd);
                 }
+                IDM_MINIMIZE_ALL => {
+                    minimize_all_windows(hwnd);
+                }
                 IDM_CLOSE_ALL => {
                     close_all_windows_from_tray(hwnd);
                 }
@@ -540,7 +598,8 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w_param: WPARAM, l_para
                         "Atajos globales:\n",
                         "• Ctrl + Win + Abajo: Minimizar ventana activa\n",
                         "• Ctrl + Win + Arriba: Restaurar última ventana\n",
-                        "• Ctrl + Win + 0: Restaurar todas las ventanas\n\n",
+                        "• Ctrl + Win + Derecha: Restaurar todas las ventanas\n",
+                        "• Ctrl + Win + Izquierda: Minimizar todas las ventanas al tray\n\n",
                         "Desarrollado y modernizado por:\n",
                         "• Luis Alberto Garcia (@worm91) — Reimplementación en Rust, soporte CSD/Electron, atajos y UX moderna.\n\n",
                         "Basado en la idea original de:\n",
@@ -564,6 +623,7 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w_param: WPARAM, l_para
             UnregisterHotKey(hwnd, HOTKEY_MINIMIZE);
             UnregisterHotKey(hwnd, HOTKEY_RESTORE_LAST);
             UnregisterHotKey(hwnd, HOTKEY_RESTORE_ALL);
+            UnregisterHotKey(hwnd, HOTKEY_MINIMIZE_ALL);
 
             let windows_to_restore: Vec<HWND> = {
                 let mut lock = MANAGER.lock().unwrap();
@@ -702,13 +762,15 @@ fn main() {
 
         WM_TASKBAR_CREATED = RegisterWindowMessageW(TASKBAR_CREATED_STR.as_ptr());
 
-        // Registrar Atajos Globales de Teclado
+        // Registrar Atajos Globales de Teclado (4 direcciones intuitivas con Ctrl + Win)
         // Ctrl + Win + Down: Minimizar ventana activa
         RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE, (MOD_CONTROL | MOD_WIN) as u32, VK_DOWN as u32);
         // Ctrl + Win + Up: Restaurar última ventana minimizada
         RegisterHotKey(main_hwnd, HOTKEY_RESTORE_LAST, (MOD_CONTROL | MOD_WIN) as u32, VK_UP as u32);
-        // Ctrl + Win + 0: Restaurar todas las ventanas
-        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_CONTROL | MOD_WIN) as u32, 0x30); // '0'
+        // Ctrl + Win + Right: Restaurar todas las ventanas
+        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_CONTROL | MOD_WIN) as u32, VK_RIGHT as u32);
+        // Ctrl + Win + Left: Minimizar todas las ventanas al System Tray
+        RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE_ALL, (MOD_CONTROL | MOD_WIN) as u32, VK_LEFT as u32);
 
         // Iniciar temporizador de sincronización dinámica cada 1500ms
         SetTimer(main_hwnd, TIMER_ID, 1500, None);

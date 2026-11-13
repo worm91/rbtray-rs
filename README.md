@@ -25,10 +25,11 @@ It allows you to **minimize almost any application window directly to the Window
 
 1. **Modern App Support (Electron, Chrome, Discord, Spotify, VS Code, Slack, CSD):**
    - Intercepts minimize button clicks even on frameless or client-side decorated windows using heuristic geometry and hit-testing.
-2. **Global Keyboard Shortcuts (*Ergonomic & Conflict-Free*):**
+2. **Global Keyboard Shortcuts (*Ergonomic 4-Arrow Directional System*):**
    - **`Ctrl + Win + Down`**: Instantly minimizes the active foreground window to the tray.
    - **`Ctrl + Win + Up`**: Restores the most recently minimized window (LIFO stack).
-   - **`Ctrl + Win + 0`**: Restores **all** minimized windows at once.
+   - **`Ctrl + Win + Right`**: Restores **all** minimized windows at once.
+   - **`Ctrl + Win + Left`**: Minimizes **all** open application windows directly to the System Tray.
 3. **Native Dark Mode Menus (Windows 10 / 11):**
    - Seamlessly integrates with Windows theme settings via UxTheme APIs; popup menus automatically match your system's Dark or Light theme.
 4. **Extended Context Menu:**
@@ -46,9 +47,10 @@ It allows you to **minimize almost any application window directly to the Window
 ## 📖 How to Use
 
 - **Using Mouse:** Right-click the minimize button (`_`) of any window (standard Win32 or modern Electron/CSD app).
-- **Using Keyboard:**
-  - Press **`Ctrl + Win + Down`** to minimize the active window to the tray.
+- **Using Keyboard (4 Arrows):**
+  - Press **`Ctrl + Win + Down`** to minimize the active foreground window.
   - Press **`Ctrl + Win + Up`** to restore the last minimized window.
-  - Press **`Ctrl + Win + 0`** to restore all minimized windows.
+  - Press **`Ctrl + Win + Right`** to restore **all** minimized windows.
+  - Press **`Ctrl + Win + Left`** to minimize **all** windows to the tray.
 - **Tray Menu:** Right-click any icon in the notification area for options (*Restore*, *Close*, *Restore All*, *Exit*).
 - **Exit:** Right-click any tray icon and select *Exit RBTray-rs*, or execute `rbtray.exe --exit`.

@@ -1,0 +1,24 @@
+# Archivos generados por Cargo y Rust
+/target/
+**/*.rs.bk
+
+# Artefactos compilados y paquetes de distribución
+/dist/
+*.exe
+*.dll
+*.pdb
+*.log
+debug.log
+
+# Archivos de configuración de editores e IDEs
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*.swo
+
+# Archivos del sistema operativo
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/

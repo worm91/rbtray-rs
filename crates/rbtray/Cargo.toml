@@ -1,0 +1,18 @@
+[package]
+name = "rbtray"
+version = "0.1.0"
+edition = "2021"
+description = "Modern RBTray in Rust - Minimize any window to tray"
+
+[[bin]]
+name = "rbtray"
+path = "src/main.rs"
+
+[dependencies]
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Shell",
+    "Win32_Graphics_Gdi",
+    "Win32_System_LibraryLoader",
+] }

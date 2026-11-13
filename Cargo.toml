@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "crates/rbhook",
+    "crates/rbtray",
+]
+resolver = "2"
+
+[profile.release]
+opt-level = "z"     # Optimizar para tamaño de binario mínimo
+lto = true          # Link-Time Optimization
+codegen-units = 1
+panic = "abort"
+strip = true        # Eliminar símbolos de depuración para reducir peso

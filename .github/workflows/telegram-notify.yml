@@ -1,7 +1,7 @@
 name: Telegram Interaction Notifier
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   watch:
     types: [started]
   fork:

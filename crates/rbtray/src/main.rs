@@ -169,7 +169,7 @@ fn load_blacklist() -> Vec<String> {
   "hotkeys": {
     "minimizeForeground": "Ctrl + Win + Down",
     "restoreLast": "Ctrl + Win + Up",
-    "restoreAll": "Ctrl + Win + T"
+    "restoreAll": "Ctrl + Win + 0"
   }
 }"#;
     let _ = fs::write(&path, default_json);
@@ -536,7 +536,11 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w_param: WPARAM, l_para
                     let title: Vec<u16> = "Acerca de RBTray-rs\0".encode_utf16().collect();
                     let desc: Vec<u16> = concat!(
                         "RBTray-rs v0.2.0\n\n",
-                        "Minimiza cualquier ventana al área de notificación de Windows con clic derecho o atajos de teclado.\n\n",
+                        "Minimiza cualquier ventana al área de notificación con clic derecho o atajos de teclado.\n\n",
+                        "Atajos globales:\n",
+                        "• Ctrl + Win + Abajo: Minimizar ventana activa\n",
+                        "• Ctrl + Win + Arriba: Restaurar última ventana\n",
+                        "• Ctrl + Win + 0: Restaurar todas las ventanas\n\n",
                         "Desarrollado y modernizado por:\n",
                         "• Luis Alberto Garcia (@worm91) — Reimplementación en Rust, soporte CSD/Electron, atajos y UX moderna.\n\n",
                         "Basado en la idea original de:\n",
@@ -703,8 +707,8 @@ fn main() {
         RegisterHotKey(main_hwnd, HOTKEY_MINIMIZE, (MOD_CONTROL | MOD_WIN) as u32, VK_DOWN as u32);
         // Ctrl + Win + Up: Restaurar última ventana minimizada
         RegisterHotKey(main_hwnd, HOTKEY_RESTORE_LAST, (MOD_CONTROL | MOD_WIN) as u32, VK_UP as u32);
-        // Ctrl + Win + T: Restaurar todas las ventanas (T de Tray)
-        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_CONTROL | MOD_WIN) as u32, 0x54); // 'T'
+        // Ctrl + Win + 0: Restaurar todas las ventanas
+        RegisterHotKey(main_hwnd, HOTKEY_RESTORE_ALL, (MOD_CONTROL | MOD_WIN) as u32, 0x30); // '0'
 
         // Iniciar temporizador de sincronización dinámica cada 1500ms
         SetTimer(main_hwnd, TIMER_ID, 1500, None);

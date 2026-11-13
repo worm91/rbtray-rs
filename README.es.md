@@ -2,9 +2,15 @@
 
 > [🇺🇸 Read in English](README.md)
 
-Reimplementación moderna, segura y de alto rendimiento de **RBTray** escrita en **Rust**, utilizando los bindings oficiales de Microsoft ([`windows-sys`](https://crates.io/crates/windows-sys)).
+Reimplementación moderna, segura y de alto rendimiento de **RBTray** escrita en **Rust**, utilizando los bindings oficiales de Microsoft ([`windows-sys`](https://crates.io/crates/windows-sys)). Construido de forma nativa para sistemas Windows de 64 bits.
 
 Permite **minimizar cualquier ventana hacia el área de notificación (System Tray)** de Windows al hacer clic derecho sobre su botón de minimizar o mediante atajos globales de teclado.
+
+> [!NOTE]
+> **Arquitectura y Compatibilidad:**
+> - **Sistema operativo:** Windows 10 y Windows 11 (64 bits nativo).
+> - **Atajos globales de teclado (`Ctrl + Win`):** Soporte universal en el **100% de las ventanas** (tanto aplicaciones de 64 bits como heredadas de 32 bits).
+> - **Hook de clic derecho:** Opera en todas las aplicaciones de 64 bits (incluyendo Electron, CSD, Chrome, Spotify, Discord, VS Code, Office y el Explorador de Windows).
 
 ---
 

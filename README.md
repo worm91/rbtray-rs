@@ -2,9 +2,15 @@
 
 > [🇪🇸 Leer en Español](README.es.md)
 
-A modern, memory-safe, and high-performance reimplementation of **RBTray** written in **Rust**, utilizing Microsoft's official Win32 bindings ([`windows-sys`](https://crates.io/crates/windows-sys)).
+A modern, memory-safe, and high-performance reimplementation of **RBTray** written in **Rust**, utilizing Microsoft's official Win32 bindings ([`windows-sys`](https://crates.io/crates/windows-sys)). Built natively for 64-bit Windows systems.
 
 It allows you to **minimize almost any application window directly to the Windows Notification Area (System Tray)** by right-clicking its minimize button or using global keyboard shortcuts.
+
+> [!NOTE]
+> **Architecture & Compatibility:**
+> - **Target:** Windows 10 & Windows 11 (64-bit native).
+> - **Global Keyboard Shortcuts (`Ctrl + Win`):** Universal support across **100% of windows** (both 64-bit and 32-bit legacy processes).
+> - **Right-Click Minimize Hook:** Operates on all 64-bit applications (including Electron, CSD, Chrome, Spotify, Discord, VS Code, Office, and Windows Explorer).
 
 ---
 

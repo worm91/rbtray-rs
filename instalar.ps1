@@ -1,4 +1,4 @@
-﻿# Script de instalación para RBTray-rs
+# Script de instalación para RBTray-rs
 $ErrorActionPreference = "Stop"
 
 Write-Host "=== Instalador de RBTray-rs ===" -ForegroundColor Cyan

@@ -1,4 +1,4 @@
-# Script de instalación para RBTray-rs
+﻿# Script de instalación para RBTray-rs
 $ErrorActionPreference = "Stop"
 
 Write-Host "=== Instalador de RBTray-rs ===" -ForegroundColor Cyan
@@ -66,4 +66,4 @@ Write-Host "`n✓ ¡Instalación completada con éxito!" -ForegroundColor Cyan
 Write-Host "• Ubicación: $installDir" -ForegroundColor White
 Write-Host "• Ya está en ejecución en segundo plano (completamente silencioso)." -ForegroundColor White
 Write-Host "• Iniciará automáticamente cada vez que inicies sesión en Windows." -ForegroundColor White
-Write-Host "• Para desinstalar en cualquier momento, ejecuta: .\desinstalar.ps1" -ForegroundColor Gray
+Write-Host "• Para desinstalar en cualquier momento, ejecuta: desinstalar.ps1" -ForegroundColor Gray
